@@ -1033,14 +1033,6 @@ static pj_status_t lis_create_transport(pjsip_tpfactory *factory,
     }
 
     if (tcp->has_pending_connect) {
-        /* Start the connection timeout timer. */
-        if ((tcp->connect_timeout.sec != 0) || (tcp->connect_timeout.msec != 0)) {
-            pjsip_endpt_schedule_timer(listener->endpt,
-                                       &tcp->connect_timer,
-                                       &tcp->connect_timeout);
-            tcp->connect_timer.id = PJ_TRUE;
-        }
-
 	/* Update (again) local address, just in case local address currently
 	 * set is different now that asynchronous connect() is started.
 	 */
