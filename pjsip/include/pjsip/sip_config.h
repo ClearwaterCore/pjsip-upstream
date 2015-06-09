@@ -578,6 +578,30 @@ PJ_INLINE(pjsip_cfg_t*) pjsip_cfg(void)
 
 
 /**
+ * The connection timeout for TCP transports. If the value is zero or
+ * larger than the OS TCP connection timeout, this timer will be
+ * disabled.
+ *
+ * Default: 0 (milliseconds) - disabled
+ */
+#ifndef PJSIP_TCP_CONNECT_TIMEOUT_MS
+#   define PJSIP_TCP_CONNECT_TIMEOUT_MS     0
+#endif
+
+
+/**
+ * The send timeout for TCP transports.  If it takes longer than this
+ * for data to be acknowledged by the peer, the connection will be torn
+ * down.  If the value is zero, the OS default will be used.
+ *
+ * Default: 0 (milliseconds) - use OS default
+ */
+#ifndef PJSIP_TCP_SEND_TIMEOUT_MS
+#   define PJSIP_TCP_SEND_TIMEOUT_MS     0
+#endif
+
+
+/**
  * Set the interval to send keep-alive packet for TCP transports.
  * If the value is zero, keep-alive will be disabled for TCP.
  *
