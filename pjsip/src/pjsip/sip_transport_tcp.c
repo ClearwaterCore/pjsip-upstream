@@ -403,6 +403,8 @@ PJ_DEF(pj_status_t) pjsip_tcp_transport_start3(
 	asock_cfg.async_cnt = MAX_ASYNC_CNT;
     else
 	asock_cfg.async_cnt = cfg->async_cnt;
+	
+    asock_cfg.concurrency = 1;
 
     pj_bzero(&listener_cb, sizeof(listener_cb));
     listener_cb.on_accept_complete = &on_accept_complete;
@@ -655,6 +657,7 @@ static pj_status_t tcp_create( struct tcp_listener *listener,
     /* Create active socket */
     pj_activesock_cfg_default(&asock_cfg);
     asock_cfg.async_cnt = 1;
+    asock_cfg.concurrency = 1;
 
     pj_bzero(&tcp_callback, sizeof(tcp_callback));
     tcp_callback.on_data_read = &on_data_read;
@@ -1592,6 +1595,11 @@ static void tcp_connect_timer(pj_timer_heap_t *th, pj_timer_entry *e)
     struct tcp_transport *tcp = (struct tcp_transport*) e->user_data;
 
     PJ_UNUSED_ARG(th);
+
+    if (!tcp->has_pending_connect) {
+        pj_assert(!"tcp_connect_timer popped but no pending connect");
+        return;
+    }
 
     /* Fake up a failed connection complete event from the lower layers.
        on_connect_complete will close the socket, which will tear
