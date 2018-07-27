@@ -930,8 +930,12 @@ static pj_status_t tcp_start_read(struct tcp_transport *tcp)
 
     size = PJSIP_NORMAL_PKT_LEN;
     readbuf[0] = tcp->rx_buf;
+
+    pj_lock_acquire(tcp->base.lock);
     status = pj_activesock_start_read2(tcp->asock, tcp->base.pool, size,
 				       readbuf, 0);
+    pj_lock_release(tcp->base.lock);
+
     if (status != PJ_SUCCESS && status != PJ_EPENDING) {
 	PJ_LOG(4, (tcp->base.obj_name,
 		   "pj_activesock_start_read() error, status=%d",
